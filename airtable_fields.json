@@ -1,0 +1,32 @@
+{
+  "ID_participante": 1,
+  "Fecha_registro": "2026-02-18T15:26:29.000Z",
+  "Estado_académico": "egresado",
+  "Tipo_sangre": "AB+",
+  "Sexo": "Otro",
+  "Correo": "prueba@gmail.com",
+  "Situación_laboral": "empresario",
+  "Empresa_actual": [
+    "recsrZp8vEXZ6MmQm"
+  ],
+  "Nivel_profesional": "director",
+  "Áreas_interés": [
+    "Legal",
+    "Otro"
+  ],
+  "Modalidad_preferida": "híbrido",
+  "Nivel_experiencia": "alto",
+  "Historial_matriculas": [
+    "recJ7iiVJ2MaObmm8"
+  ],
+  "Historial_certificados": [
+    "rec7oWOpEMzxToEI6"
+  ],
+  "Historial_transacciones": [
+    "rece0OOCBDKoK4EOa"
+  ],
+  "Fuente_prospecto": "Corporativo",
+  "ASISTENCIAS": [
+    "rec8A7PLMF3Pn0SeU"
+  ]
+}

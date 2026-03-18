@@ -1,0 +1,25 @@
+/* reuse landing utilities */
+.hero-contact {
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+    padding: 12rem 0 6rem;
+    text-align: center;
+}
+
+.contact-info .contact-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 3rem;
+}
+
+.contact-info .contact-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.1rem;
+    color: var(--text-main);
+}
+
+.contact-info .contact-item svg {
+    color: var(--primary);
+}

@@ -1,0 +1,234 @@
+:root {
+  /* Corporate CAPEX Palette - Derived from Official Site */
+  --primary: #1073B3;
+  /* Official CAPEX Blue */
+  --primary-dark: #0d5c8f;
+  /* secondary now matches primary to eliminate purple usage */
+  --secondary: #1073B3;
+  --secondary-hover: #0d5c8f;
+  /* alias values kept for older code but they point to primary */
+  --accent: var(--secondary);
+  --accent-dark: var(--secondary-hover);
+  --dark: #111827;
+  /* Deep Slate for Header/Footer */
+  --bg-main: #f8fafc;
+  --bg-card: #ffffff;
+  --text-main: #1f2937;
+  --text-muted: #6b7280;
+  --border: #e5e7eb;
+
+  /* Strict Corporate Tokens */
+  --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Corporate Spacing Utilities */
+.section-padding {
+  padding: 5rem 0;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  width: 100%;
+}
+
+/* Button System - Clean & Structured */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  cursor: pointer;
+  border: 1px solid transparent;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+}
+
+.btn-secondary {
+  background-color: var(--accent);
+  color: var(--text-main);
+}
+
+.btn-secondary:hover {
+  background-color: var(--accent-dark);
+}
+
+/* Professional Cards - No Glassmorphism */
+.card-corporate {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 2rem;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.card-corporate:hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* Authentication Pages - Structured */
+.login-window-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 2rem;
+  background-color: #f3f4f6;
+}
+
+.login-box {
+  width: 100%;
+  max-width: 480px;
+  background: white;
+  padding: 3.5rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.branding-section {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.brand-navy {
+  color: var(--primary);
+  font-size: 2.25rem;
+  font-weight: 900;
+  letter-spacing: -0.025em;
+  margin-bottom: 0.5rem;
+}
+
+.sub-brand {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Form Controls - Corporate Style */
+.form-group-modern {
+  margin-bottom: 1.5rem;
+}
+
+.form-group-modern label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-main);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.05em;
+}
+
+.form-group-modern input,
+.form-group-modern textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  transition: var(--transition);
+  background: white;
+}
+
+.form-group-modern input:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(16, 115, 179, 0.1);
+}
+
+.error-text-modern {
+  color: #b91c1c;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  background: #fef2f2;
+  padding: 1rem;
+  border-left: 4px solid #b91c1c;
+}
+
+/* Robust Registration Styles */
+.registration-robust {
+  max-width: 720px;
+}
+
+.form-row {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.form-group-modern.half {
+  flex: 1;
+}
+
+.scrollable-form {
+  max-height: 55vh;
+  overflow-y: auto;
+  padding-right: 1.5rem;
+}
+
+.scrollable-form::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scrollable-form::-webkit-scrollbar-thumb {
+  background-color: var(--border);
+  border-radius: 4px;
+}
+
+@media (max-width: 640px) {
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .login-box {
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+}
