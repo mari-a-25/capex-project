@@ -3,9 +3,10 @@ import { Star, Info, Users } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import './Programas.css';
-import { api } from '../services/airtable';
+import { useAirtableData } from '../services/useAirtableData';
 
 const Programas = () => {
+    const { getCursos, registerEnrollment, queueEmail } = useAirtableData();
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selected, setSelected] = useState(null);
@@ -18,7 +19,7 @@ const Programas = () => {
     useEffect(() => {
         const fetch = async () => {
             try {
-                const records = await api.getCursos();
+                const records = await getCursos();
                 const formatted = records.map(r => ({
                     id: r.id,
                     title: r.fields.Titulo || r.fields.Name || r.fields.Title || 'Curso sin título',
@@ -61,7 +62,7 @@ const Programas = () => {
         setEnrolling(true);
         try {
             // record provisional matrícula (using email in Usuario field for now)
-            await api.registerEnrollment({
+            await registerEnrollment({
                 Curso: [curso.id],
                 Usuario: email,
                 Estado: 'Pendiente',
@@ -72,7 +73,7 @@ const Programas = () => {
             const formLink = `${window.location.origin}/registro?cursoId=${curso.id}&email=${encodeURIComponent(email)}`;
 
             // queue email via Airtable; an automation can pick this up and send it
-            await api.queueEmail({
+            await queueEmail({
                 To: email,
                 Subject: `Completa tu registro para ${curso.title}`,
                 Body: `Gracias por tu pago conectado al curso ${curso.title}.\n" +

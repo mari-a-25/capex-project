@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { api } from '../services/airtable';
+import { useAirtableData } from '../services/useAirtableData';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+    const { loginParticipant, getParticipant } = useAirtableData();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -12,7 +13,7 @@ export const AuthProvider = ({ children }) => {
         setLoading(true);
         setError(null);
         try {
-            const record = await api.loginParticipant(identifier, password);
+            const record = await loginParticipant(identifier, password);
             if (record && record.id) {
                 const acceso = record.fields['Acceso_Portal'];
 
@@ -57,7 +58,7 @@ export const AuthProvider = ({ children }) => {
         if (savedId) {
             const autoLogin = async () => {
                 try {
-                    const data = await api.getParticipant(savedId);
+                    const data = await getParticipant(savedId);
                     setUser({ recordId: data.id, ...data.fields });
                 } catch (e) {
                     localStorage.removeItem('capex_user_record_id');
@@ -69,7 +70,7 @@ export const AuthProvider = ({ children }) => {
         } else {
             setLoading(false);
         }
-    }, []);
+    }, [getParticipant]);
 
     return (
         <AuthContext.Provider value={{ user, loading, error, login, logout }}>

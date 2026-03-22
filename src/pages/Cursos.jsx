@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Star, Info, Users } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import './Cursos.css';
-import { api } from '../services/airtable';
+import { useAirtableData } from '../services/useAirtableData';
 
 const Cursos = () => {
+    const { getCursos, registerEnrollment, queueEmail, loadingAirtable } = useAirtableData();
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selected, setSelected] = useState(null);
@@ -15,9 +16,9 @@ const Cursos = () => {
 
     // Fetch courses from Airtable on mount
     useEffect(() => {
-        const fetch = async () => {
+        const fetchCursos = async () => {
             try {
-                const records = await api.getCursos();
+                const records = await getCursos();
                 const formatted = records.map(r => ({
                     id: r.id,
                     title: r.fields.Titulo || r.fields.Name || r.fields.Title || 'Curso sin título',
@@ -44,7 +45,7 @@ const Cursos = () => {
                 setLoading(false);
             }
         };
-        fetch();
+        fetchCursos();
     }, []);
 
     // Handle enrollment (creates a record in MATRÍCULAS)
@@ -60,7 +61,7 @@ const Cursos = () => {
         setEnrolling(true);
         try {
             // record provisional matrícula (using email in Usuario field for now)
-            await api.registerEnrollment({
+            await registerEnrollment({
                 Curso: [curso.id],
                 Usuario: email,
                 Estado: 'Pendiente',
@@ -71,7 +72,7 @@ const Cursos = () => {
             const formLink = `${window.location.origin}/registro?cursoId=${curso.id}&email=${encodeURIComponent(email)}`;
 
             // queue email via Airtable; an automation can pick this up and send it
-            await api.queueEmail({
+            await queueEmail({
                 To: email,
                 Subject: `Completa tu registro para ${curso.title}`,
                 Body: `Gracias por tu pago conectado al curso ${curso.title}.\n" +

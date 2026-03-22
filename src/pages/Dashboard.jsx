@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { api } from '../services/airtable';
+import { useAirtableData } from '../services/useAirtableData';
 import {
     BookOpen,
     Calendar,
@@ -68,6 +68,7 @@ const CourseCard = ({ enrollment }) => {
 
 const Dashboard = () => {
     const { user } = useAuth();
+    const { getEnrollments } = useAirtableData();
     const [enrollments, setEnrollments] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -75,7 +76,7 @@ const Dashboard = () => {
         const fetchDashboardData = async () => {
             if (user?.recordId) {
                 try {
-                    const data = await api.getEnrollments(user.recordId);
+                    const data = await getEnrollments(user.recordId);
                     setEnrollments(data);
                 } catch (error) {
                     console.error('Error fetching enrollments:', error);

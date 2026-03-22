@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { api } from '../services/airtable';
+import { useAirtableData } from '../services/useAirtableData';
 import { ShieldCheck } from 'lucide-react';
 
 const Register = () => {
+    const { registerParticipant } = useAirtableData();
     const [formData, setFormData] = useState({
         Nombre: '',
         Apellido: '',
@@ -30,7 +31,7 @@ const Register = () => {
         setLoading(true);
         setError(null);
         try {
-            await api.registerParticipant(formData);
+            await registerParticipant(formData);
             setSuccess(true);
         } catch (err) {
             console.error(err);

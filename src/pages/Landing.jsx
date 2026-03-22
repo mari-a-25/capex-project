@@ -21,7 +21,7 @@ import {
     Calendar,
     Play
 } from 'lucide-react';
-import { api } from '../services/airtable';
+import { useAirtableData } from '../services/useAirtableData';
 import './Landing.css';
 
 // ============= SCROLL ANIMATION HOOK =============
@@ -329,6 +329,7 @@ const MetricCounter = ({ label, value, icon: Icon, isSuffix, delay }) => {
 
 const MetricsSection = () => {
     const { ref: containerRef, inView } = useScrollAnimation();
+    const { getMetrics } = useAirtableData();
     const [metricsData, setMetricsData] = useState([
         { label: 'Estudiantes Activos', value: 2300, icon: Users },
         { label: 'Personas Capacitadas', value: 8540, icon: BookOpen },
@@ -337,7 +338,7 @@ const MetricsSection = () => {
     ]);
 
     useEffect(() => {
-        api.getMetrics().then(records => {
+        getMetrics().then(records => {
             const filtered = records.filter(r => r.fields && r.fields.Nombre && typeof r.fields.Valor !== 'undefined');
             if (filtered.length > 0) {
                 setMetricsData(

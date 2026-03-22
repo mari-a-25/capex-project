@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { api } from '../services/airtable';
+import { useAirtableData } from '../services/useAirtableData';
 
 const SolicitudForm = () => {
+    const { getCurso, submitSolicitud } = useAirtableData();
     const [params] = useSearchParams();
     const cursoId = params.get('cursoId');
     const preEmail = params.get('email') || '';
@@ -29,7 +30,7 @@ const SolicitudForm = () => {
 
     useEffect(() => {
         if (cursoId) {
-            api.getCurso(cursoId).then(res => {
+            getCurso(cursoId).then(res => {
                 setCourse(res.fields);
             }).catch(console.error);
         }
@@ -44,7 +45,7 @@ const SolicitudForm = () => {
         setLoading(true);
         setError(null);
         try {
-            await api.submitSolicitud(formData);
+            await submitSolicitud(formData);
             setSuccess(true);
         } catch (err) {
             console.error(err);

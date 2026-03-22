@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { api } from '../services/airtable';
+import { useAirtableData } from '../services/useAirtableData';
 import {
     Award,
     Download,
@@ -47,6 +47,7 @@ const CertificateRow = ({ cert }) => {
 
 const Certificates = () => {
     const { user } = useAuth();
+    const { getCertificates } = useAirtableData();
     const [certs, setCerts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -55,7 +56,7 @@ const Certificates = () => {
         const fetchCerts = async () => {
             if (user?.recordId) {
                 try {
-                    const data = await api.getCertificates(user.recordId);
+                    const data = await getCertificates(user.recordId);
                     setCerts(data);
                 } catch (error) {
                     console.error('Error fetching certificates:', error);

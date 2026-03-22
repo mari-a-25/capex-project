@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { api } from '../services/airtable';
+import { useAirtableData } from '../services/useAirtableData';
 import './Surveys.css';
 
 const Surveys = () => {
     const { user } = useAuth();
+    const { submitSurvey } = useAirtableData();
     const [submitted, setSubmitted] = useState(false);
     const [formData, setFormData] = useState({
         NPS: 10,
@@ -22,7 +23,7 @@ const Surveys = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await api.submitSurvey({
+            await submitSurvey({
                 Participante: [user.recordId],
                 ...formData
             });
