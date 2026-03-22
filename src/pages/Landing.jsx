@@ -55,80 +55,22 @@ const HeroSection = () => {
     };
 
     return (
-        <section className="hero-section">
-            <div className="hero-background">
-                <div className="particles">
-                    {[...Array(20)].map((_, i) => (
-                        <motion.div
-                            key={i}
-                            className="particle"
-                            animate={{
-                                y: [0, -100, 0],
-                                opacity: [0, 1, 0],
-                            }}
-                            transition={{
-                                duration: 8 + i * 0.5,
-                                repeat: Infinity,
-                                delay: i * 0.3,
-                            }}
-                            style={{
-                                left: `${Math.random() * 100}%`,
-                                top: `${Math.random() * 100}%`,
-                            }}
-                        />
-                    ))}
+        <section className="hero">
+            <div className="hero-left">
+                <div className="hero-badge-tag">CENTRO DE INNOVACIÓN Y EDUCACIÓN</div>
+                <h1>Transformando la Región<br />Norte a través del Conocimiento</h1>
+                <p>Impulsamos el desarrollo profesional con programas innovadores diseñados para el crecimiento empresarial.</p>
+                <div className="hero-buttons">
+                    <Link to="/login" className="hero-btn-primary">ACCEDER →</Link>
+                    <button onClick={scrollToPrograms} className="hero-btn-secondary">EXPLORAR OFERTA →</button>
                 </div>
-                <img
-                    src="https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=1470&auto=format&fit=crop"
-                    alt="CAPEX Hero"
-                    className="hero-bg-image"
-                />
-                <div className="hero-overlay" />
             </div>
-
-            <div className="container hero-container">
-                <motion.div className="hero-content" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-                    <div className="hero-badge">Centro de Innovación y Educación</div>
-                    <h1 className="hero-title">
-                        <TypewriterText text="Transformando la Región Norte a través del Conocimiento" />
-                    </h1>
-                    <motion.p className="hero-description" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.5 }}>
-                        CAPEX es un órgano catalizador de grandes proyectos de emprendimiento e innovación,
-                        desarrollando iniciativas académicas enfocadas en el ámbito profesional y empresarial.
-                    </motion.p>
-
-                    <motion.div className="hero-actions" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 3 }}>
-                        <Link to="/login" className="btn btn-primary btn-lg hero-btn">
-                            Acceder <ArrowRight size={18} />
-                        </Link>
-                        <button onClick={scrollToPrograms} className="btn btn-outline btn-lg hero-btn">
-                            Explorar Oferta <ArrowRight size={18} />
-                        </button>
-                    </motion.div>
-                </motion.div>
+            <div className="right-hero">
+                <div className="hero-card-image">
+                    <img src="https://images.unsplash.com/photo-1552664730-d307ca884978" alt="Training" />
+                </div>
+                <div className="small-card">+50,000 profesionales capacitados</div>
             </div>
-
-            {/* Quick Programs Bar */}
-            <motion.div className="quick-programs-bar" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 3.5 }}>
-                {[
-                    { icon: BookOpen, label: 'Diplomados' },
-                    { icon: Users, label: 'Talleres' },
-                    { icon: Lightbulb, label: 'Charlas' },
-                    { icon: Users, label: 'Networking' }
-                ].map((item, i) => (
-                    <motion.div
-                        key={i}
-                        className="quick-item"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 3.5 + i * 0.2 }}
-                        whileHover={{ scale: 1.15, rotate: 5 }}
-                    >
-                        <item.icon size={24} />
-                        <span>{item.label}</span>
-                    </motion.div>
-                ))}
-            </motion.div>
         </section>
     );
 };
@@ -176,93 +118,129 @@ const ProgramCard = ({ title, description, icon: Icon, image, features, cta, del
     );
 };
 
-// ============= PROGRAMS SECTION =============
+// ============= PROGRAMS SECTION (CAROUSEL) =============
 const ProgramsSection = () => {
     const [selectedProgram, setSelectedProgram] = useState(null);
+    const [programs, setPrograms] = useState([]);
+    const { getCursos } = useAirtableData();
+    const [currentIndex, setCurrentIndex] = useState(0);
 
-    const programs = [
+    const fallbacks = [
         {
-            id: 1,
-            title: 'Diplomados',
-            description: 'Programas profundos con certificación académica avalada y enfoque práctico.',
-            icon: BookOpen,
-            image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=1470&auto=format&fit=crop',
-            features: ['Certificación avalada', 'Enfoque práctico', '6-12 meses'],
-            cta: 'Ver programa'
+            id: 'f1', title: 'Escuela de Gerentes', description: 'Transformamos profesionales en líderes estratégicos con visión global y herramientas innovadoras de gestión.',
+            image: 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=800', nivel: 'Diplomado', duracion: '6 Meses'
         },
         {
-            id: 2,
-            title: 'Talleres In-Company',
-            description: 'Formación personalizada diseñada exclusivamente para las necesidades de su empresa.',
-            icon: Users,
-            image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=1470&auto=format&fit=crop',
-            features: ['Personalizado', 'Tu equipo', 'Flexible'],
-            cta: 'Solicitar propuesta'
+            id: 'f2', title: 'HR Mastery: Gestión Humana', description: 'Potenciamos a los líderes de gestión humana con metodologías avanzadas e inteligencia emocional.',
+            image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800', nivel: 'Especialidad', duracion: 'Flexible'
         },
         {
-            id: 3,
-            title: 'Charlas de Innovación',
-            description: 'Espacios de networking y vanguardia sobre tendencias globales y emprendimiento.',
-            icon: Lightbulb,
-            image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=1470&auto=format&fit=crop',
-            features: ['En vivo', 'Networking', 'Próxima en 18 días'],
-            cta: 'Reservar asiento'
-        },
-        {
-            id: 4,
-            title: 'Programas Ejecutivos',
-            description: 'Formación de alto nivel para líderes y ejecutivos en transformación digital.',
-            icon: ShieldCheck,
-            image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=1470&auto=format&fit=crop',
-            features: ['Ejecutivos', 'Transformación', 'Premium'],
-            cta: 'Más información'
+            id: 'f3', title: 'Mandos Medios', description: 'Preparamos a los mandos medios para convertirse en el motor de ejecución estratégica de la empresa.',
+            image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800', nivel: 'Taller', duracion: 'Presencial'
         }
     ];
 
+    useEffect(() => {
+        getCursos().then(records => {
+            if (records.length > 0) {
+                const formatted = records.map(r => ({
+                    id: r.id,
+                    title: r.fields.Titulo || r.fields.Name || r.fields.Title || '',
+                    description: r.fields.Descripcion || r.fields.Description || r.fields.DescripcionCorta || 'Programa de alto nivel para profesionales.',
+                    longDesc: r.fields.LongDescription || r.fields.Descripción_larga || r.fields.Descripcion || '',
+                    image: (() => {
+                        const img = r.fields.Imagen;
+                        if (Array.isArray(img)) return img[0]?.url || 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=800';
+                        return typeof img === 'string' ? img : 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=800';
+                    })(),
+                    nivel: r.fields.Nivel || r.fields.Tipo || 'Programa',
+                    duracion: r.fields.Duracion || 'Flexible',
+                })).filter(p => p.title.trim() !== '');
+                setPrograms(formatted.length >= 3 ? formatted : [...formatted, ...fallbacks.slice(formatted.length)]);
+            } else {
+                setPrograms(fallbacks);
+            }
+        }).catch(err => {
+            console.error('Error cargando programas', err);
+            setPrograms(fallbacks);
+        });
+    }, [getCursos]);
+
+    const visibleCards = 3;
+    const maxIndex = Math.max(0, programs.length - visibleCards);
+
+    const handleNext = () => {
+        if (currentIndex < maxIndex) {
+            setCurrentIndex(prev => prev + 1);
+        }
+    };
+
+    const handlePrev = () => {
+        if (currentIndex > 0) {
+            setCurrentIndex(prev => prev - 1);
+        }
+    };
+
+    // Calculate translate offset dynamically matching the 40px gap defined in CSS
+    const translateOffset = `calc(-${currentIndex} * (33.333% - 27px + 40px))`;
+
     return (
-        <section className="section-padding programs-section" id="programas">
-            <div className="container">
-                <motion.div className="section-header" initial={{ opacity: 0, y: -30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-100px' }} transition={{ duration: 0.6 }}>
-                    <h2 className="section-title">Programas Destacados</h2>
-                    <p className="section-subtitle">Formación ejecutiva diseñada para los retos del mercado actual.</p>
-                </motion.div>
-
-                <div className="programs-grid">
-                    {programs.map((program, i) => (
-                        <ProgramCard
-                            key={program.id}
-                            {...program}
-                            delay={i * 0.1}
-                            onDetailsClick={() => setSelectedProgram(program)}
-                        />
+        <section className="destacados-section" id="programas">
+            <div className="section-header-carousel">
+                <h2>Programas Insignia</h2>
+                <p>Formación ejecutiva de alto impacto diseñada para los retos del mercado actual.</p>
+            </div>
+            
+            <div className="carousel-container">
+                <button 
+                    className="carousel-btn prev" 
+                    onClick={handlePrev}
+                    style={{ visibility: currentIndex === 0 ? 'hidden' : 'visible' }}
+                >
+                    <i className="fas fa-chevron-left"></i>
+                </button>
+                <button 
+                    className="carousel-btn next" 
+                    onClick={handleNext}
+                    style={{ visibility: currentIndex >= maxIndex ? 'hidden' : 'visible' }}
+                >
+                    <i className="fas fa-chevron-right"></i>
+                </button>
+                
+                <div 
+                    className="carousel-track" 
+                    style={{ transform: `translateX(${translateOffset})` }}
+                >
+                    {programs.map((program, idx) => (
+                        <div className="program-card-carrusel" key={program.id || idx}>
+                            <div className="card-image-wrapper">
+                                <img src={program.image} alt={program.title} />
+                            </div>
+                            <div className="card-content-carrusel">
+                                <h3>{program.title}</h3>
+                                <p>{program.description}</p>
+                                <div className="card-tags">
+                                    <span className="tag">{program.nivel}</span>
+                                    <span className="tag">{program.duracion}</span>
+                                </div>
+                                <button className="card-btn-carrusel" onClick={() => setSelectedProgram(program)}>Ver Programa</button>
+                            </div>
+                        </div>
                     ))}
-                </div>
-
-                <div className="programs-banner">
-                    <div className="programs-banner-content">
-                        <h3>¿Quieres ver más programas?</h3>
-                        <p>
-                            Aquí mostramos una selección destacada, pero hay mucho más por descubrir.
-                            Visita la página completa o solicita un programa diseñado a tu medida.
-                        </p>
-                        <Link to="/programas" className="btn btn-secondary btn-lg">
-                            Ver catálogo completo
-                        </Link>
-                    </div>
                 </div>
             </div>
 
-            {/* Program Details Modal */}
+            {/* Program Details Modal (Mantenido intacto el diseño existente al abrir) */}
             {selectedProgram && (
                 <motion.div className="modal-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} onClick={() => setSelectedProgram(null)}>
                     <motion.div className="modal-content" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} onClick={e => e.stopPropagation()}>
                         <button className="modal-close" onClick={() => setSelectedProgram(null)}>✕</button>
                         <div className="modal-header">
-                            <selectedProgram.icon size={48} />
+                            <BookOpen size={48} />
                             <h2>{selectedProgram.title}</h2>
                         </div>
                         <div className="modal-body">
-                            <p>{selectedProgram.description}</p>
+                            <p>{selectedProgram.longDesc || selectedProgram.description}</p>
                             <div className="modal-accordion">
                                 <details>
                                     <summary>📚 Temario</summary>
@@ -279,7 +257,7 @@ const ProgramsSection = () => {
                                 </details>
                                 <details>
                                     <summary>⏰ Horario y Modalidad</summary>
-                                    <p>Modalidad híbrida o presencial. Horarios compatibles con jornada laboral.</p>
+                                    <p>Modalidad: {selectedProgram.duracion}. Horarios compatibles con jornada laboral.</p>
                                 </details>
                             </div>
                         </div>
@@ -291,6 +269,107 @@ const ProgramsSection = () => {
                     </motion.div>
                 </motion.div>
             )}
+        </section>
+    );
+};
+
+// ============= CONOCE NUESTROS PROGRAMAS SECTION =============
+const ConoceProgramasSection = () => {
+    const { ref, inView } = useInView({
+        threshold: 0.2,
+        triggerOnce: true
+    });
+
+    return (
+        <section className={`conoce-section ${inView ? 'reveal' : ''}`} id="conoce-section" ref={ref}>
+            <div className="conoce-image-container">
+                <img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?q=80&w=1600" alt="Equipo Capex" />
+            </div>
+            <div className="conoce-text-container">
+                <h2>Conoce Nuestros Programas</h2>
+                <p>Nos transformamos digitalmente para servirte. Mantenemos la experiencia acumulada durante años y nos renovamos con las mejores prácticas actuales.</p>
+                <Link to="/programas" className="btn-ver-programas">VER PRÓXIMOS PROGRAMAS</Link>
+            </div>
+        </section>
+    );
+};
+
+// ============= ESPECIALIZACIONES SECTION =============
+const EspecializacionesSection = () => {
+    return (
+        <section className="especializaciones-section">
+            <div className="esp-header">
+                <h2>Especializaciones</h2>
+                <p>Alcanza todo tu potencial</p>
+            </div>
+            <div className="especialidades-grid">
+                <div className="esp-card">
+                    <i className="fas fa-laptop-code"></i> <h3>Tecnología</h3>
+                    <p>Domina las herramientas digitales que están liderando la transformación global.</p>
+                </div>
+                <div className="esp-card">
+                    <i className="fas fa-sitemap"></i> <h3 className="highlight-underline">Desarrollo <br/> Organizacional</h3>
+                    <p>Potencia el talento humano y la cultura de tu empresa para resultados sostenibles.</p>
+                </div>
+                <div className="esp-card">
+                    <i className="fas fa-chart-pie"></i> <h3>Negocios</h3>
+                    <p>Estrategias comerciales y financieras diseñadas para el mercado competitivo actual.</p>
+                </div>
+                <div className="esp-card">
+                    <i className="fas fa-cogs"></i> <h3>Operaciones</h3>
+                    <p>Optimiza procesos y cadena de suministro con metodologías de eficiencia de clase mundial.</p>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+// ============= ALIADOS SECTION =============
+const AliadosSection = () => {
+    // Definimos los aliados base
+    const aliados = [
+        { img: "/aliados/human.png", alt: "Human" },
+        { img: "/aliados/change.png", alt: "Change" },
+        { img: "/aliados/brainx.png", alt: "Brainx" },
+        { img: "/aliados/afp.png", alt: "AFP" },
+        { img: "/aliados/Katy.png", alt: "Katy" },
+        { img: "/aliados/Lissette.png", alt: "Lissette" },
+        { img: "/aliados/venti.png", alt: "Venti" }
+    ];
+
+    // Duplicamos el array para que el scroll infinito funcione fluidamente
+    const aliadosDuplicados = [...aliados, ...aliados];
+
+    return (
+        <div className="aliados-container">
+            <h2 className="aliados-title">Nuestros Aliados Estratégicos</h2>
+            <div className="logo-slider">
+                {aliadosDuplicados.map((aliado, idx) => (
+                    <div className="logo-slide" key={idx}>
+                        <img src={aliado.img} alt={aliado.alt} />
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+// ============= SIMPOSIO SECTION =============
+const SimposioSection = () => {
+    return (
+        <section className="simposio-section" id="simposio">
+            <div className="simposio-container">
+                <div className="simposio-poster">
+                    <img src="/simpiosio.png" alt="Regeneración Educativa" />
+                </div>
+                <div className="simposio-info">
+                    <p style={{ color: '#5abaf1', fontWeight: '600', marginBottom: '10px' }}>PROYECTO ESPECIAL</p>
+                    <h2>10mo. Simposio de Capacitación en la República Dominicana:<br/> <span>"Regeneración Educativa: Innovación y Trascendencia"</span></h2>
+                    <a href="https://www.youtube.com/watch?v=FOfpE_9E4_o" target="_blank" rel="noopener noreferrer" className="btn-acceder">
+                        Ver Video Completo <i className="fas fa-play" style={{ marginLeft: '10px', fontSize: '14px' }}></i>
+                    </a>
+                </div>
+            </div>
         </section>
     );
 };
@@ -637,6 +716,10 @@ export default function Landing() {
 
             <HeroSection />
             <ProgramsSection />
+            <ConoceProgramasSection />
+            <EspecializacionesSection />
+            <AliadosSection />
+            <SimposioSection />
             <MetricsSection />
             <MissionSection />
             <TestimonialsSection />
