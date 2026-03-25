@@ -13,6 +13,7 @@ import SolicitudForm from './pages/SolicitudForm';
 import './index.css';
 import QuienesSomos from './pages/QuienesSomos';
 import Contact from './pages/Contact';
+import Footer from './components/Footer';
 
 // Modern Login Style
 import { Link } from 'react-router-dom';
@@ -32,7 +33,8 @@ const Login = () => {
   };
 
   return (
-    <div className="login-window-container">
+    <div className="page-with-site-footer">
+      <div className="login-window-container">
       <div className="login-box">
         <div className="login-header-modern">
           <div className="branding-section">
@@ -75,6 +77,8 @@ const Login = () => {
           </form>
         </div>
       </div>
+      </div>
+      <Footer />
     </div>
   );
 };

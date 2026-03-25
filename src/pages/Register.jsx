@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAirtableData } from '../services/useAirtableData';
 import { ShieldCheck } from 'lucide-react';
+import Footer from '../components/Footer';
 
 const Register = () => {
     const { registerParticipant } = useAirtableData();
@@ -42,6 +43,7 @@ const Register = () => {
     };
 
     return (
+        <div className="page-with-site-footer">
         <div className="login-window-container">
             <div className="login-box registration-robust">
                 <div className="login-header-modern">
@@ -209,6 +211,8 @@ const Register = () => {
                     )}
                 </div>
             </div>
+        </div>
+        <Footer />
         </div>
     );
 };

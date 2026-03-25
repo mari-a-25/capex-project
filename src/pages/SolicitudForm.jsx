@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useAirtableData } from '../services/useAirtableData';
+import Footer from '../components/Footer';
 
 const SolicitudForm = () => {
     const { getCurso, submitSolicitud } = useAirtableData();
@@ -56,6 +57,7 @@ const SolicitudForm = () => {
     };
 
     return (
+        <div className="page-with-site-footer">
         <div className="login-window-container">
             <div className="login-box registration-robust">
                 <div className="login-header-modern">
@@ -216,6 +218,8 @@ const SolicitudForm = () => {
                     )}
                 </div>
             </div>
+        </div>
+        <Footer />
         </div>
     );
 };

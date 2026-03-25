@@ -113,6 +113,18 @@ body {
   background-color: #f3f4f6;
 }
 
+/* Login/registro con footer institucional debajo */
+.page-with-site-footer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.page-with-site-footer .login-window-container {
+  flex: 1;
+  min-height: auto;
+}
+
 .login-box {
   width: 100%;
   max-width: 480px;

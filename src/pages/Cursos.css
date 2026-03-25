@@ -580,98 +580,7 @@
     padding: 1rem;
 }
 
-/* ====== FOOTER ====== */
-.footer {
-    background-color: var(--primary);
-    color: white;
-    padding: 4rem 0 2rem;
-    margin-top: auto;
-}
-
-.footer-grid {
-    display: grid;
-    grid-template-columns: 1.5fr 1fr 1fr;
-    gap: 3rem;
-    margin-bottom: 2rem;
-}
-
-.footer-brand .logo-text {
-    font-size: 1.5rem;
-    font-weight: 900;
-    margin-bottom: 1rem;
-}
-
-.footer-brand p {
-    color: rgba(255, 255, 255, 0.8);
-    margin-bottom: 1.5rem;
-    line-height: 1.6;
-}
-
-.social-links {
-    display: flex;
-    gap: 1rem;
-}
-
-.social-links a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    color: white;
-    transition: var(--transition);
-    text-decoration: none;
-}
-
-.social-links a:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
-}
-
-.footer-links h4,
-.footer-contact h4 {
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-}
-
-.footer-links ul {
-    list-style: none;
-    padding: 0;
-}
-
-.footer-links li {
-    margin-bottom: 0.75rem;
-}
-
-.footer-links a {
-    color: rgba(255, 255, 255, 0.8);
-    text-decoration: none;
-    transition: var(--transition);
-}
-
-.footer-links a:hover {
-    color: white;
-}
-
-.contact-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-    color: rgba(255, 255, 255, 0.8);
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
-    line-height: 1.6;
-}
-
-.footer-bottom {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 2rem;
-    text-align: center;
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 0.85rem;
-}
+/* Footer: src/components/Footer.css */
 
 /* ====== RESPONSIVE ====== */
 @media (max-width: 1024px) {
@@ -680,10 +589,6 @@
         gap: 2rem;
     }
 
-    .footer-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 2rem;
-    }
 }
 
 @media (max-width: 768px) {
@@ -715,10 +620,6 @@
 
     .price-box {
         grid-column: 1 / -1;
-    }
-
-    .footer-grid {
-        grid-template-columns: 1fr;
     }
 
     .modal-actions {
