@@ -13,6 +13,20 @@
     background-color: #ffffff;
 }
 
+/* Info blocks (duplicados de Nosotros) */
+.programas-hero .qs-hero-content {
+    padding-top: 80px; /* deja espacio para navbar fixed cuando aplique */
+}
+
+.programas-about {
+    padding-top: 70px;
+}
+
+.programas-mvv {
+    padding-top: 80px;
+    padding-bottom: 80px;
+}
+
 
 /* ====== HERO SECTION ====== */
 /* Uses shared landing hero-section styling */

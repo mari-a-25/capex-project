@@ -14,6 +14,7 @@ import './index.css';
 import QuienesSomos from './pages/QuienesSomos';
 import Contact from './pages/Contact';
 import Footer from './components/Footer';
+import FloatingChat from './components/FloatingChat';
 
 // Modern Login Style
 import { Link } from 'react-router-dom';
@@ -96,6 +97,7 @@ function App() {
   return (
     <AuthProvider>
       <Router>
+        <FloatingChat />
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />

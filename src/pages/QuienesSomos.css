@@ -1,118 +1,451 @@
-@import './Landing.css';
+.quienes-somos-page {
+  background: #fff;
+  color: var(--text-main);
+  overflow-x: hidden;
+}
 
-/* Quienes Somos specific layout */
-.quienes-somos-page .hero-quienes .hero-content {
+.quienes-somos-page p {
+  text-align: justify;
+  line-height: 1.8;
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+.qs-tagline {
+  display: block;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  color: var(--primary);
+  margin-bottom: 15px;
+}
+
+.qs-tagline-white {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* HERO */
+.qs-hero-wrap {
+  height: 60vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    linear-gradient(rgba(14, 130, 193, 0.82), rgba(13, 92, 143, 0.9)),
+    url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80') center/cover;
+  color: #fff;
+  text-align: center;
+}
+
+.qs-hero-content {
+  z-index: 2;
+  padding: 0 5%;
+  max-width: 1000px;
+}
+
+.qs-hero-content h1 {
+  font-size: 3.25rem;
+  font-weight: 900;
+  margin-bottom: 20px;
+  letter-spacing: -0.02em;
+}
+
+.qs-hero-content p {
+  color: #fff;
+  text-align: center;
+  font-size: 1.2rem;
+  opacity: 0.95;
+  margin: 0;
+}
+
+/* MÉTRICAS */
+.qs-metrics-shell {
+  margin-top: -60px;
+}
+
+.qs-metrics-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  background: #fff;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 10;
+}
+
+.qs-metric-item {
+  text-align: center;
+  border-right: 1px solid #eee;
+  padding: 20px;
+}
+
+.qs-metric-item:last-child {
+  border-right: none;
+}
+
+.qs-metric-item i {
+  font-size: 2rem;
+  color: var(--primary);
+  margin-bottom: 15px;
+  display: block;
+}
+
+.qs-metric-item h3 {
+  font-size: 2.2rem;
+  color: var(--primary-dark);
+  font-weight: 800;
+  margin-bottom: 5px;
+}
+
+.qs-metric-item p {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ABOUT */
+.qs-about-section {
+  padding: 100px 10%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.qs-about-content h2 {
+  font-size: 2.5rem;
+  margin-bottom: 25px;
+  line-height: 1.2;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.qs-about-img-frame {
+  position: relative;
+}
+
+.qs-about-img-frame img {
+  width: 100%;
+  border-radius: 25px;
+  box-shadow: 20px 20px 0 #f4f7f9;
+}
+
+.qs-floating-metric {
+  position: absolute;
+  bottom: -20px;
+  left: -30px;
+  background: var(--primary);
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  z-index: 5;
+  color: #fff;
+}
+
+.qs-floating-metric .number {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.qs-floating-metric .label {
+  display: block;
+  opacity: 0.9;
+  margin-top: 4px;
+}
+
+/* MVV */
+.qs-mvv-container {
+  padding: 100px 10%;
+  background: linear-gradient(to bottom, #ffffff, #f0f4f8);
+}
+
+.qs-mvv-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+.qs-mvv-card {
+  background: #fff;
+  padding: 60px 35px;
+  border-radius: 30px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(14, 130, 193, 0.1);
+  transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.qs-mvv-card:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 25px 50px rgba(14, 130, 193, 0.15);
+  border-color: var(--primary);
+}
+
+.qs-icon-box {
+  width: 100px;
+  height: 100px;
+  background: #eef6fb;
+  border-radius: 50%;
+  margin: 0 auto 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  border: 1px solid rgba(14, 130, 193, 0.1);
+}
+
+.qs-mvv-card h4 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  font-weight: 900;
+  color: var(--primary-dark);
+}
+
+.qs-valores-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.qs-pill {
+  background: #f1f5f9;
+  color: var(--primary);
+  padding: 8px 16px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: 1px solid rgba(14, 130, 193, 0.1);
+}
+
+/* LIDERAZGO */
+.qs-header-banner {
+  background: var(--primary);
+  padding: 80px 0;
+  text-align: center;
+  color: #fff;
+  position: relative;
+  z-index: 5;
+}
+
+.qs-header-banner h2 {
+  font-size: 3rem;
+  font-weight: 900;
+  margin: 0;
+}
+
+.qs-perfil-section {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 5%;
+  display: grid;
+  gap: 80px;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+}
+
+.qs-img-frame img {
+  width: 100%;
+  border-radius: 25px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+}
+
+.qs-content-box {
+  padding: 40px;
+  background-color: #fff;
+  border-radius: 25px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.qs-p-interactivo {
+  text-align: justify;
+  line-height: 1.9;
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  margin-bottom: 30px;
+  padding: 15px;
+  border-radius: 10px;
+  transition: 0.25s ease;
+}
+
+.qs-p-interactivo:hover {
+  background-color: rgba(16, 115, 179, 0.04);
+  color: var(--text-main);
+}
+
+.qs-firma-box {
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 1px solid #eee;
+}
+
+.qs-firma-box img {
+  max-width: 320px;
+  width: 100%;
+}
+
+.qs-presidente-section {
+  /* menos pegado al encabezado y menos aire general */
+  margin: 56px auto 64px;
+  grid-template-columns: 0.8fr 1.2fr;
+}
+
+.qs-directora-section {
+  /* reduce el espacio entre Lama y Directora */
+  margin: 0 auto 64px;
+  grid-template-columns: 1.2fr 0.8fr;
+}
+
+/* CONSEJO (grid corregido) */
+.qs-council-extended-section {
+  padding: 60px 10% 100px;
+  background-color: #fff;
+}
+
+.qs-council-extended-flex {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 50px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.qs-ext-member-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: calc(33.33% - 34px);
+  min-width: 280px;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.7s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.qs-ext-member-card.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.qs-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: 0.8s ease-out;
+}
+
+.qs-reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.qs-ext-photo-frame {
+  width: 100%;
+  height: 380px;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #f4f7f9;
+  margin-bottom: 25px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+}
+
+.qs-ext-photo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: 0.8s ease;
+}
+
+.qs-ext-member-card:hover .qs-ext-photo-frame img {
+  transform: scale(1.06);
+}
+
+.qs-ext-member-name {
+  display: block;
+  font-family: 'Great Vibes', cursive !important;
+  font-size: 2.2rem;
+  color: var(--text-main);
+  margin-bottom: 2px;
+  line-height: 1.2;
+}
+
+.qs-ext-member-role {
+  display: block;
+  font-family: var(--font-main);
+  color: var(--primary);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+@media (max-width: 950px) {
+  .qs-mvv-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .qs-about-section {
+    grid-template-columns: 1fr;
+    padding: 80px 6%;
+  }
+
+  .qs-perfil-section {
+    grid-template-columns: 1fr !important;
     text-align: center;
-    max-width: 800px;
-    margin: 0 auto;
+  }
+
+  .qs-ext-member-card {
+    width: calc(50% - 25px);
+  }
 }
 
-.quienes-somos-page .hero-quienes .hero-subtitle {
-    font-size: 1.25rem;
-    color: var(--text-muted);
-    margin-top: 1rem;
-}
+@media (max-width: 650px) {
+  .qs-hero-content h1 {
+    font-size: 2.4rem;
+  }
 
-/* About section – reuse .about styles but with a bit more spacing */
-.quienes-somos-page .about-section {
-    background-color: #f8fafc;
-    padding: 5rem 0;
-}
+  .qs-metrics-shell {
+    margin-top: -40px;
+  }
 
-.quienes-somos-page .about-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: start;
-}
+  .qs-metrics-container {
+    padding: 28px;
+  }
 
-.quienes-somos-page .about-image img {
+  .qs-metric-item {
+    border-right: none;
+    border-bottom: 1px solid #eee;
+  }
+
+  .qs-metric-item:last-child {
+    border-bottom: none;
+  }
+
+  .qs-floating-metric {
+    left: 16px;
+    bottom: 16px;
+  }
+
+  .qs-ext-member-card {
     width: 100%;
-    max-height: 460px;
-    object-fit: cover;
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-lg);
-    border: 8px solid white;
-}
-
-.quienes-somos-page .about-text h2 {
-    font-size: 2.25rem;
-    font-weight: 900;
-    margin-top: 1.5rem;
-    margin-bottom: 1rem;
-    color: var(--text-main);
-}
-
-.quienes-somos-page .about-text p {
-    font-size: 1rem;
-    line-height: 1.7;
-    color: var(--text-muted);
-    margin-bottom: 1.5rem;
-}
-
-.quienes-somos-page .values-list {
-    list-style: disc inside;
-    margin-top: 0.5rem;
-    color: var(--text-main);
-}
-
-.quienes-somos-page .values-list li {
-    margin-bottom: 0.5rem;
-}
-
-/* Hitos / timeline */
-.quienes-somos-page .hitos-section .timeline {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    padding-left: 2rem;
-    margin-top: 2rem;
-}
-
-.quienes-somos-page .hitos-section .timeline::before {
-    content: '';
-    position: absolute;
-    left: 0.75rem;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background: var(--border);
-}
-
-.quienes-somos-page .hitos-section .timeline-item {
-    position: relative;
-    margin-bottom: 2rem;
-}
-
-.quienes-somos-page .hitos-section .timeline-item::before {
-    content: '';
-    position: absolute;
-    left: -0.4rem;
-    top: 0.4rem;
-    width: 1rem;
-    height: 1rem;
-    background: var(--primary);
-    border: 3px solid white;
-    border-radius: 50%;
-}
-
-.quienes-somos-page .hitos-section .timeline-year {
-    font-size: 1.25rem;
-    font-weight: 900;
-    color: var(--primary);
-    margin-bottom: 0.5rem;
-}
-
-.quienes-somos-page .hitos-section p {
-    color: var(--text-muted);
-    line-height: 1.6;
-    margin: 0;
-}
-
-/* Responsive adjustments */
-@media (max-width: 1024px) {
-    .quienes-somos-page .about-container {
-        grid-template-columns: 1fr;
-        text-align: center;
-    }
+  }
 }

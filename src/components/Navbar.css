@@ -6,10 +6,14 @@
     font-family: 'Inter', sans-serif;
 }
 
-body {
-    background: #f8fbff;
-    overflow-x: hidden;
-    padding-top: 140px; /* Espacio para que el nav fijo no tape el contenido */
+/* El espacio superior lo controlamos con una variable calculada en JS
+   para evitar “bandas blancas” cuando el header se oculta/muestra. */
+body.nav-visible {
+    padding-top: var(--site-header-height, 150px);
+}
+
+body.nav-hidden {
+    padding-top: 0;
 }
 
 /* ===== HEADER (NAVBAR) CORREGIDO ===== */
@@ -37,7 +41,7 @@ body {
 .top-bar {
     display: flex;
     justify-content: flex-end;
-    padding: 10px 60px;
+    padding: 12px 60px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -76,7 +80,7 @@ body {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    padding: 10px 60px;
+    padding: 14px 60px;
 }
 
 .nav-left {
@@ -90,7 +94,7 @@ body {
     color: white;
     text-decoration: none;
     font-weight: 800;
-    font-size: 14px;
+    font-size: 15px;
 }
 
 /* Dropdown */
@@ -168,7 +172,7 @@ body {
 .search-bar {
     background: white;
     border-radius: 25px;
-    padding: 10px 20px;
+    padding: 12px 20px;
     display: flex;
     align-items: center;
     width: 260px;
@@ -190,7 +194,7 @@ body {
     background: #7a4a5a;
     color: white;
     border: none;
-    padding: 12px 24px;
+    padding: 13px 26px;
     border-radius: 8px;
     font-weight: 700;
     font-size: 15px;

@@ -6,6 +6,7 @@ const Navbar = () => {
     const [scrolled, setScrolled] = useState(false);
     const [hidden, setHidden] = useState(false);
     const navigate = useNavigate();
+    const headerRef = React.useRef(null);
 
     useEffect(() => {
         let lastScrollY = window.scrollY;
@@ -30,8 +31,33 @@ const Navbar = () => {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
+    useEffect(() => {
+        document.body.classList.toggle('nav-hidden', hidden);
+        document.body.classList.toggle('nav-visible', !hidden);
+        return () => {
+            document.body.classList.remove('nav-hidden');
+            document.body.classList.remove('nav-visible');
+        };
+    }, [hidden]);
+
+    useEffect(() => {
+        const updateHeaderHeight = () => {
+            const h = headerRef.current?.offsetHeight || 0;
+            if (h > 0) {
+                document.documentElement.style.setProperty('--site-header-height', `${h}px`);
+            }
+        };
+        updateHeaderHeight();
+        window.addEventListener('resize', updateHeaderHeight);
+        return () => window.removeEventListener('resize', updateHeaderHeight);
+    }, []);
+
     return (
-        <header className={`header ${scrolled ? 'scrolled' : ''} ${hidden ? 'hidden' : ''}`} id="navbar">
+        <header
+            ref={headerRef}
+            className={`header ${scrolled ? 'scrolled' : ''} ${hidden ? 'hidden' : ''}`}
+            id="navbar"
+        >
             <div className="top-bar">
                 <div className="top-right">
                     <div className="socials">

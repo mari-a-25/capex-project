@@ -3,7 +3,27 @@ import { Star, Info, Users } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import './Programas.css';
+import './QuienesSomos.css';
 import { useAirtableData } from '../services/useAirtableData';
+import CountUp from 'react-countup';
+import { useInView } from 'react-intersection-observer';
+
+const ProgramaMetric = ({ iconClassName, value, label, suffix }) => {
+    const { ref, inView } = useInView({ threshold: 0.15, triggerOnce: true });
+    return (
+        <div className="qs-metric-item" ref={ref}>
+            <i className={iconClassName} aria-hidden="true" />
+            <h3>
+                {inView ? (
+                    <CountUp end={value} duration={2.2} separator="," suffix={suffix || ''} />
+                ) : (
+                    '0'
+                )}
+            </h3>
+            <p>{label}</p>
+        </div>
+    );
+};
 
 const Programas = () => {
     const { getCursos, registerEnrollment, queueEmail } = useAirtableData();
@@ -95,6 +115,75 @@ const Programas = () => {
         <div className="cursos-page">
             {/* shared Navbar */}
             <Navbar />
+
+            {/* Info Blocks (duplicados de Nosotros) */}
+            <header className="qs-hero-wrap programas-hero">
+                <div className="qs-hero-content">
+                    <h1>Programas y Cursos</h1>
+                    <p>Formación práctica para impulsar talento, innovación y productividad en la región.</p>
+                </div>
+            </header>
+
+            <section className="qs-metrics-shell" aria-label="Métricas CAPEX">
+                <div className="qs-metrics-container">
+                    <ProgramaMetric iconClassName="fas fa-user-graduate" value={8500} label="Egresados" />
+                    <ProgramaMetric iconClassName="fas fa-handshake" value={150} label="Empresas Aliadas" />
+                    <ProgramaMetric iconClassName="fas fa-calendar-alt" value={500} label="Eventos Anuales" />
+                    <ProgramaMetric iconClassName="fas fa-award" value={98} label="Calidad Educativa" suffix="%" />
+                </div>
+            </section>
+
+            <section className="qs-about-section programas-about">
+                <div className="qs-about-content">
+                    <span className="qs-tagline">Nuestra oferta</span>
+                    <h2>Aprendizaje orientado a resultados</h2>
+                    <p>Programas alineados a la realidad del mercado, con un enfoque práctico para el crecimiento profesional.</p>
+                    <p>Explora los cursos disponibles y completa tu inscripción en minutos.</p>
+                </div>
+                <div className="qs-about-img-frame">
+                    <img
+                        src="https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=1470&auto=format&fit=crop"
+                        alt="Programas CAPEX"
+                    />
+                    <div className="qs-floating-metric" aria-label="Más de 50,000 estudiantes">
+                        <div>
+                            <span className="number">+50,000</span>
+                            <span className="label">Estudiantes</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section className="qs-mvv-container programas-mvv">
+                <div className="qs-mvv-grid">
+                    <div className="qs-mvv-card">
+                        <div className="qs-icon-box">
+                            <i className="fas fa-bullseye fa-2x" aria-hidden="true" />
+                        </div>
+                        <h4>Misión</h4>
+                        <p>Fortalecemos el talento humano de las organizaciones para el logro de su desarrollo sostenible.</p>
+                    </div>
+                    <div className="qs-mvv-card">
+                        <div className="qs-icon-box">
+                            <i className="fas fa-eye fa-2x" aria-hidden="true" />
+                        </div>
+                        <h4>Visión</h4>
+                        <p>Transformamos el conocimiento en riqueza.</p>
+                    </div>
+                    <div className="qs-mvv-card">
+                        <div className="qs-icon-box">
+                            <i className="fas fa-star fa-2x" aria-hidden="true" />
+                        </div>
+                        <h4>Valores</h4>
+                        <div className="qs-valores-pills">
+                            <span className="qs-pill">Excelencia</span>
+                            <span className="qs-pill">Compromiso</span>
+                            <span className="qs-pill">Sostenibilidad</span>
+                            <span className="qs-pill">Innovación</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
             {/* Courses Grid */}
             <section className="section-padding courses-section" id="cursos">
