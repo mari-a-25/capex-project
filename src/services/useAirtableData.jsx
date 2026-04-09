@@ -59,6 +59,37 @@ export const useAirtableData = () => {
         }
     };
 
+    const ensureEventosTable = async () => {
+        try {
+            await base('EVENTOS').select({ maxRecords: 1 }).firstPage();
+        } catch (err) {
+            if (err.statusCode === 404 || err.statusCode === 403) {
+                try {
+                    await airtableMeta.post('/tables', {
+                        name: 'EVENTOS',
+                        fields: [
+                            { name: 'Titulo', type: 'singleLineText' },
+                            { name: 'Descripcion', type: 'multilineText' },
+                            { name: 'DescripcionLarga', type: 'multilineText' },
+                            { name: 'FechaInicio', type: 'dateTime', options: { timeZone: 'America/Santo_Domingo', dateFormat: { name: 'local' }, timeFormat: { name: '24hour' } } },
+                            { name: 'FechaFin', type: 'dateTime', options: { timeZone: 'America/Santo_Domingo', dateFormat: { name: 'local' }, timeFormat: { name: '24hour' } } },
+                            { name: 'Ubicacion', type: 'singleLineText' },
+                            { name: 'Estado', type: 'singleSelect', options: { choices: [{ name: 'Abierto' }, { name: 'Cerrado' }, { name: 'Agotado' }, { name: 'Cancelado' }] } },
+                            { name: 'Destacado', type: 'checkbox' },
+                            { name: 'LinkRegistro', type: 'url' },
+                            { name: 'Imagen', type: 'multipleAttachments' },
+                            { name: 'CupoTotal', type: 'number' },
+                            { name: 'CupoDisponible', type: 'number' },
+                            { name: 'Categoria', type: 'singleLineText' }
+                        ]
+                    });
+                } catch (metaErr) {
+                    console.warn('Could not create EVENTOS table');
+                }
+            }
+        }
+    };
+
     const loginParticipant = useCallback((identifier, password) => {
         let formula = `OR({Correo} = '${identifier}', {Cédula_pasaporte} = '${identifier}')`;
         if (password) {
@@ -190,6 +221,19 @@ export const useAirtableData = () => {
         );
     }, []);
 
+    const getEventos = useCallback(async () => {
+        await ensureEventosTable();
+        try {
+            const records = await base('EVENTOS').select({ sort: [{ field: 'Date', direction: 'asc' }] }).all();
+            return records.map(r => ({ id: r.id, fields: r.fields }));
+        } catch (err) {
+            if (err.statusCode === 404) return [];
+            if (err.statusCode === 403) return [];
+            console.error(err);
+            throw err;
+        }
+    }, []);
+
     return {
         loadingAirtable,
         errorAirtable,
@@ -210,6 +254,7 @@ export const useAirtableData = () => {
         submitSolicitud,
         getSolicitudes,
         approveSolicitud,
-        queueEmail
+        queueEmail,
+        getEventos
     };
 };

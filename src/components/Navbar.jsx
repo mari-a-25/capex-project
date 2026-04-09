@@ -1,36 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Navbar.css';
 
 const Navbar = () => {
     const [scrolled, setScrolled] = useState(false);
     const [hidden, setHidden] = useState(false);
+    const [mobileOpen, setMobileOpen] = useState(false);
     const navigate = useNavigate();
-    const headerRef = React.useRef(null);
+    const headerRef = useRef(null);
 
+    // Scroll behavior
     useEffect(() => {
         let lastScrollY = window.scrollY;
-
         const handleScroll = () => {
             const currentScrollY = window.scrollY;
-
-            // Ocultar al bajar, mostrar al subir
             if (currentScrollY > lastScrollY && currentScrollY > 150) {
                 setHidden(true);
             } else {
                 setHidden(false);
             }
-
-            // Cambiar fondo al hacer scroll
             setScrolled(currentScrollY > 50);
-
             lastScrollY = currentScrollY;
         };
-
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    // Clases del body para padding-top
     useEffect(() => {
         document.body.classList.toggle('nav-hidden', hidden);
         document.body.classList.toggle('nav-visible', !hidden);
@@ -40,6 +36,7 @@ const Navbar = () => {
         };
     }, [hidden]);
 
+    // Altura dinámica del header
     useEffect(() => {
         const updateHeaderHeight = () => {
             const h = headerRef.current?.offsetHeight || 0;
@@ -52,64 +49,266 @@ const Navbar = () => {
         return () => window.removeEventListener('resize', updateHeaderHeight);
     }, []);
 
+    // Bloquear scroll cuando el drawer móvil está abierto
+    useEffect(() => {
+        document.body.style.overflow = mobileOpen ? 'hidden' : '';
+        return () => { document.body.style.overflow = ''; };
+    }, [mobileOpen]);
+
+    const closeMobile = () => setMobileOpen(false);
+
+    const handleNavContact = () => {
+        navigate('/contacto');
+        closeMobile();
+    };
+
     return (
-        <header
-            ref={headerRef}
-            className={`header ${scrolled ? 'scrolled' : ''} ${hidden ? 'hidden' : ''}`}
-            id="navbar"
-        >
-            <div className="top-bar">
-                <div className="top-right">
-                    <div className="socials">
-                        <i className="fab fa-facebook-f"></i>
-                        <i className="fab fa-linkedin-in"></i>
-                        <i className="fab fa-instagram"></i>
-                        <i className="fab fa-youtube"></i>
-                    </div>
-                    <div className="top-links">
-                        <span>Mi carrito</span>
-                        <span onClick={() => navigate('/login')}>Iniciar sesión</span>
-                    </div>
-                </div>
-            </div>
-            <nav className="main-nav">
-                <div className="nav-left">
-                    <Link to="/quienes-somos">NOSOTROS</Link>
-                    <Link to="/eventos">EVENTOS</Link>
-                    <Link to="/programas">PROGRAMAS</Link>
-                    <div className="dropdown">
-                        <span className="dropbtn">+</span>
-                        <div className="dropdown-content extended-menu">
-                            <div className="menu-group">
-                                <div className="menu-header">PROGRAMAS INSIGNIA <i className="fas fa-caret-down"></i></div>
-                                <Link to="/liderazgo-integral">LIDERAZGO INTEGRAL</Link>
-                                <Link to="/mandos-medios">PROFESIONALIZACIÓN DE MANDOS MEDIOS</Link>
-                            </div>
-                            <div className="menu-group">
-                                <div className="menu-header">SERVICIOS <i className="fas fa-caret-down"></i></div>
-                                <Link to="/consultoria">CONSULTORIA</Link>
-                                <Link to="/coaching">COACHING CORPORATIVO</Link>
-                                <Link to="/capex-espacios">CAPEX ESPACIOS</Link>
-                            </div>
-                            <Link to="/contacto" className="single-link">CONTACTO</Link>
+        <>
+            <header
+                ref={headerRef}
+                className={`header ${scrolled ? 'scrolled' : ''} ${hidden ? 'hidden' : ''}`}
+                id="navbar"
+            >
+                {/* TOP BAR */}
+                <div className="top-bar">
+                    <div className="top-right">
+                        <div className="socials">
+                            <a href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="Facebook">
+                                <i className="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="https://linkedin.com" target="_blank" rel="noreferrer" aria-label="LinkedIn">
+                                <i className="fab fa-linkedin-in"></i>
+                            </a>
+                            <a href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram">
+                                <i className="fab fa-instagram"></i>
+                            </a>
+                            <a href="https://youtube.com" target="_blank" rel="noreferrer" aria-label="YouTube">
+                                <i className="fab fa-youtube"></i>
+                            </a>
+                        </div>
+                        <div className="top-links">
+                            <button onClick={() => navigate('/carrito')}>Mi carrito</button>
+                            <button
+                                className="btn-login"
+                                onClick={() => navigate('/login')}
+                            >
+                                Iniciar sesión
+                            </button>
                         </div>
                     </div>
                 </div>
-                <div className="logo-container">
-                    <Link to="/">
-                        {/* La imagen Capex.jpg se levanta directamente de la carpeta /public */}
-                        <img src="/Capex.jpg" alt="Logo Capex" />
-                    </Link>
-                </div>
-                <div className="nav-right">
-                    <div className="search-bar">
-                        <input type="text" placeholder="Buscar..." />
-                        <i className="fas fa-search"></i>
+
+                {/* MAIN NAV */}
+                <nav className="main-nav">
+                    {/* Hamburger — solo visible en móvil */}
+                    <button
+                        className={`hamburger ${mobileOpen ? 'open' : ''}`}
+                        onClick={() => setMobileOpen(prev => !prev)}
+                        aria-label="Abrir menú"
+                    >
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+
+                    {/* LINKS IZQUIERDA — ocultos en móvil */}
+                    <div className="nav-left">
+                        <Link to="/quienes-somos">NOSOTROS</Link>
+                        <Link to="/eventos">EVENTOS</Link>
+                        <Link to="/programas">PROGRAMAS</Link>
+
+                        {/* DROPDOWN ELEGANTE */}
+                        <div className="dropdown">
+                            <div className="dropbtn">
+                                <div className="menu-icon">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                                MÁS
+                            </div>
+                            <div className="dropdown-content">
+                                <div className="dropdown-cols">
+                                    {/* Columna 1 — Programas insignia */}
+                                    <div className="dropdown-col">
+                                        <div className="dropdown-col-title">
+                                            <i className="fas fa-star"></i> Programas
+                                        </div>
+                                        <Link to="/liderazgo-integral">
+                                            <div className="link-icon">
+                                                <i className="fas fa-users-cog"></i>
+                                            </div>
+                                            Liderazgo Integral
+                                        </Link>
+                                        <Link to="/mandos-medios">
+                                            <div className="link-icon">
+                                                <i className="fas fa-sitemap"></i>
+                                            </div>
+                                            Mandos Medios
+                                        </Link>
+                                    </div>
+
+                                    {/* Columna 2 — Servicios */}
+                                    <div className="dropdown-col">
+                                        <div className="dropdown-col-title">
+                                            <i className="fas fa-briefcase"></i> Servicios
+                                        </div>
+                                        <Link to="/consultoria">
+                                            <div className="link-icon">
+                                                <i className="fas fa-chart-line"></i>
+                                            </div>
+                                            Consultoría
+                                        </Link>
+                                        <Link to="/coaching">
+                                            <div className="link-icon">
+                                                <i className="fas fa-comments"></i>
+                                            </div>
+                                            Coaching Corp.
+                                        </Link>
+                                        <Link to="/capex-espacios">
+                                            <div className="link-icon">
+                                                <i className="fas fa-building"></i>
+                                            </div>
+                                            Capex Espacios
+                                        </Link>
+                                    </div>
+                                </div>
+
+                                {/* Footer del dropdown */}
+                                <div className="dropdown-footer">
+                                    <Link to="/contacto">
+                                        <div className="link-icon">
+                                            <i className="fas fa-envelope"></i>
+                                        </div>
+                                        Contáctenos
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <button className="btn-contact" onClick={() => navigate('/contacto')}>Contáctenos</button>
+
+                    {/* LOGO CENTRADO */}
+                    <div className="logo-container">
+                        <Link to="/">
+                            <img src="/Capex.jpg" alt="Logo Capex" />
+                        </Link>
+                    </div>
+
+                    {/* DERECHA — buscador y botón */}
+                    <div className="nav-right">
+                        <div className="search-bar">
+                            <i className="fas fa-search"></i>
+                            <input type="text" placeholder="Buscar..." />
+                        </div>
+                        <button className="btn-contact" onClick={handleNavContact}>
+                            Contáctenos
+                        </button>
+                    </div>
+                </nav>
+            </header>
+
+            {/* BACKDROP móvil */}
+            <div
+                className={`mobile-backdrop ${mobileOpen ? 'open' : ''}`}
+                onClick={closeMobile}
+            />
+
+            {/* DRAWER MÓVIL */}
+            <nav className={`mobile-menu ${mobileOpen ? 'open' : ''}`}>
+                <div className="mobile-menu-header">
+                    <span className="mobile-logo">CAPEX</span>
+                    <button className="mobile-close" onClick={closeMobile}>
+                        <i className="fas fa-times"></i>
+                    </button>
+                </div>
+
+                {/* Buscador móvil */}
+                <div className="mobile-search">
+                    <i className="fas fa-search"></i>
+                    <input type="text" placeholder="Buscar programas, servicios..." />
+                </div>
+
+                {/* Navegación principal */}
+                <div className="mobile-section-title">Menú principal</div>
+                <Link to="/quienes-somos" onClick={closeMobile}>
+                    <div className="mob-icon"><i className="fas fa-info-circle"></i></div>
+                    Nosotros
+                </Link>
+                <Link to="/eventos" onClick={closeMobile}>
+                    <div className="mob-icon"><i className="fas fa-calendar-alt"></i></div>
+                    Eventos
+                </Link>
+                <Link to="/programas" onClick={closeMobile}>
+                    <div className="mob-icon"><i className="fas fa-graduation-cap"></i></div>
+                    Programas
+                </Link>
+
+                <div className="mobile-divider" />
+
+                {/* Programas insignia */}
+                <div className="mobile-section-title">Programas insignia</div>
+                <Link to="/liderazgo-integral" onClick={closeMobile}>
+                    <div className="mob-icon"><i className="fas fa-users-cog"></i></div>
+                    Liderazgo Integral
+                </Link>
+                <Link to="/mandos-medios" onClick={closeMobile}>
+                    <div className="mob-icon"><i className="fas fa-sitemap"></i></div>
+                    Mandos Medios
+                </Link>
+
+                <div className="mobile-divider" />
+
+                {/* Servicios */}
+                <div className="mobile-section-title">Servicios</div>
+                <Link to="/consultoria" onClick={closeMobile}>
+                    <div className="mob-icon"><i className="fas fa-chart-line"></i></div>
+                    Consultoría
+                </Link>
+                <Link to="/coaching" onClick={closeMobile}>
+                    <div className="mob-icon"><i className="fas fa-comments"></i></div>
+                    Coaching Corporativo
+                </Link>
+                <Link to="/capex-espacios" onClick={closeMobile}>
+                    <div className="mob-icon"><i className="fas fa-building"></i></div>
+                    Capex Espacios
+                </Link>
+
+                <div className="mobile-divider" />
+
+                {/* Sesión */}
+                <div className="mobile-section-title">Mi cuenta</div>
+                <Link to="/login" onClick={closeMobile}>
+                    <div className="mob-icon"><i className="fas fa-user"></i></div>
+                    Iniciar sesión
+                </Link>
+                <Link to="/carrito" onClick={closeMobile}>
+                    <div className="mob-icon"><i className="fas fa-shopping-cart"></i></div>
+                    Mi carrito
+                </Link>
+
+                {/* Footer del drawer */}
+                <div className="mobile-footer">
+                    <button className="btn-mobile-contact" onClick={handleNavContact}>
+                        <i className="fas fa-envelope"></i>
+                        Contáctenos
+                    </button>
+                    <div className="mobile-socials">
+                        <a href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="Facebook">
+                            <i className="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="https://linkedin.com" target="_blank" rel="noreferrer" aria-label="LinkedIn">
+                            <i className="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram">
+                            <i className="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://youtube.com" target="_blank" rel="noreferrer" aria-label="YouTube">
+                            <i className="fab fa-youtube"></i>
+                        </a>
+                    </div>
                 </div>
             </nav>
-        </header>
+        </>
     );
 };
 
