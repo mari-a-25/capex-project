@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useAirtableData } from '../services/useAirtableData';
 import {
@@ -8,7 +9,9 @@ import {
     MessageCircle,
     ExternalLink,
     ChevronRight,
-    Clock
+    Clock,
+    Award,
+    User
 } from 'lucide-react';
 import './Dashboard.css';
 
@@ -68,6 +71,7 @@ const CourseCard = ({ enrollment }) => {
 
 const Dashboard = () => {
     const { user } = useAuth();
+    const navigate = useNavigate();
     const { getEnrollments } = useAirtableData();
     const [enrollments, setEnrollments] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -103,6 +107,18 @@ const Dashboard = () => {
                         <span className="stat-label">Cursos<br />Activos</span>
                     </div>
                 </div>
+            </div>
+
+            <div className="dashboard-quick-actions" style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
+                <button className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} onClick={() => navigate('/programas')}>
+                    <BookOpen size={16} /> Explorar Catálogo
+                </button>
+                <button className="btn btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#f8fafc', color: '#1e293b' }} onClick={() => navigate('/certificados')}>
+                    <Award size={16} /> Mis Certificados
+                </button>
+                <button className="btn btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#f8fafc', color: '#1e293b' }} onClick={() => navigate('/perfil')}>
+                    <User size={16} /> Configurar Perfil
+                </button>
             </div>
 
             <div className="dashboard-grid">

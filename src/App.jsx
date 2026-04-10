@@ -18,6 +18,13 @@ import Footer from './components/Footer';
 import FloatingChat from './components/FloatingChat';
 
 import Login from './pages/Login';
+import LiderazgoIntegral from './pages/LiderazgoIntegral';
+import MandosMedios from './pages/MandosMedios';
+import Consultoria from './pages/Consultoria';
+import Coaching from './pages/Coaching';
+import CapexEspacios from './pages/CapexEspacios';
+import Carrito from './pages/Carrito';
+
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
 
@@ -41,6 +48,14 @@ function App() {
           <Route path="/programas" element={<Programas />} />
           <Route path="/contacto" element={<Contact />} />
           <Route path="/eventos" element={<Eventos />} />
+          
+          <Route path="/liderazgo-integral" element={<LiderazgoIntegral />} />
+          <Route path="/mandos-medios" element={<MandosMedios />} />
+          <Route path="/consultoria" element={<Consultoria />} />
+          <Route path="/coaching" element={<Coaching />} />
+          <Route path="/capex-espacios" element={<CapexEspacios />} />
+          <Route path="/carrito" element={<Carrito />} />
+
           <Route
             path="/dashboard"
             element={

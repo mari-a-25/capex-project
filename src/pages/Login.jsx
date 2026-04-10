@@ -22,6 +22,9 @@ const Login = () => {
       <div className="login-window-container">
       <div className="login-box">
         <div className="login-header-modern">
+          <Link to="/" style={{display: 'inline-flex', alignItems: 'center', fontWeight: 'bold', color: 'var(--primary)', marginBottom: '1.5rem', textDecoration: 'none'}}>
+             <i className="fas fa-arrow-left" style={{marginRight: '8px'}}></i> Volver a inicio
+          </Link>
           <div className="branding-section">
             <h2 className="brand-navy">CAPEX</h2>
             <p className="sub-brand">Centro de Innovación y Educación</p>
