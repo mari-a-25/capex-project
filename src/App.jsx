@@ -13,6 +13,9 @@ import SolicitudForm from './pages/SolicitudForm';
 import './index.css';
 import QuienesSomos from './pages/QuienesSomos';
 import Contact from './pages/Contact';
+import MisCursos from './pages/MisCursos';
+import DetalleCurso from './pages/DetalleCurso';
+import FormularioCierre from './pages/FormularioCierre';
 import Eventos from './pages/Eventos';
 import Footer from './components/Footer';
 import FloatingChat from './components/FloatingChat';
@@ -61,6 +64,30 @@ function App() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/mis-cursos"
+            element={
+              <ProtectedRoute>
+                <MisCursos />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/mis-cursos/detalle/:id"
+            element={
+              <ProtectedRoute>
+                <DetalleCurso />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/mis-cursos/detalle/:cursoId/formulario/:moduloId"
+            element={
+              <ProtectedRoute>
+                <FormularioCierre />
               </ProtectedRoute>
             }
           />

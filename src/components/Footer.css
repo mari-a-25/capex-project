@@ -12,6 +12,13 @@
   margin: 0 auto;
 }
 
+div.capex-footer p,
+div.capex-footer a,
+div.capex-footer span,
+div.capex-footer h4 {
+  color: white;
+}
+
 .capex-footer .footer-main-grid {
   display: grid;
   grid-template-columns: 1.5fr 0.8fr 1fr 1.5fr;

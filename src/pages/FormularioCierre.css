@@ -1,0 +1,42 @@
+.form-cierre-page {
+    padding: 24px;
+}
+
+.form-cierre-container {
+    background: white;
+    padding: 32px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.form-alert {
+    background: #eef7ff;
+    color: #0e82c1;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 500;
+    margin: 16px 0 24px;
+    font-size: 0.95rem;
+}
+
+.examen-form .form-group {
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.examen-form label {
+    font-weight: 600;
+    color: #1a202c;
+}
+
+.examen-form input,
+.examen-form textarea {
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-family: inherit;
+}

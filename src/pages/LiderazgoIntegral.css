@@ -84,14 +84,15 @@
 
 /* ===== HERO ===== */
 .li-hero {
-    min-height: 92vh;
+    min-height: 75vh;
     display: grid;
     grid-template-columns: 1.1fr 0.9fr;
     align-items: center;
     padding: 0 10%;
     gap: 70px;
     background: linear-gradient(160deg, #f4f7f9 60%, #e8f4fd 100%);
-    padding-top: var(--site-header-height, 130px);
+    padding-top: 110px;
+    padding-bottom: 50px;
     position: relative;
     overflow: hidden;
 }
@@ -490,9 +491,9 @@
     line-height: 1.2;
 }
 
-.li-metrics-sub {
+.li-page p.li-metrics-sub {
     font-size: 1rem;
-    color: rgba(255,255,255,0.8);
+    color: #ffffff;
     max-width: 560px;
     margin: 0 auto 60px;
     line-height: 1.7;

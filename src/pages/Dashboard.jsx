@@ -1,179 +1,422 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useAirtableData } from '../services/useAirtableData';
-import {
-    BookOpen,
-    Calendar,
-    Video,
-    MessageCircle,
-    ExternalLink,
-    ChevronRight,
-    Clock,
-    Award,
-    User
-} from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import './Dashboard.css';
 
-const CourseCard = ({ enrollment }) => {
-    const fields = enrollment.fields;
-    const assistance = fields['%_asistencia'] || 0;
+/* ── Helpers ── */
+const getInitials = (nombre = '', apellido = '') =>
+    `${nombre.charAt(0)}${apellido.charAt(0)}`.toUpperCase() || 'U';
+
+const getPctClass = (pct) => {
+    if (pct >= 80) return '';
+    if (pct >= 60) return 'warning';
+    return 'danger';
+};
+
+/* ── Mini Calendario ── */
+const MiniCalendar = ({ sessionDays = [] }) => {
+    const [offset, setOffset] = useState(0);
+    const today = new Date();
+    const ref = new Date(today.getFullYear(), today.getMonth() + offset, 1);
+    const year = ref.getFullYear();
+    const month = ref.getMonth();
+
+    const monthName = ref.toLocaleDateString('es-DO', { month: 'long', year: 'numeric' });
+    const firstDay  = (new Date(year, month, 1).getDay() + 6) % 7;
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const dayNames = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+
+    const cells = [];
+    for (let i = 0; i < firstDay; i++) cells.push(null);
+    for (let d = 1; d <= daysInMonth; d++) cells.push(d);
+
+    const isToday  = (d) => d === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+    const hasSess  = (d) => sessionDays.includes(d) && month === today.getMonth() && year === today.getFullYear();
 
     return (
-        <div className="card course-card">
-            <div className="course-card-header">
-                <span className="badge-modality">{fields['Modalidad'] || 'Presencial'}</span>
-                <h3>{fields['Nombre_programa'] || 'Diplomado CAPEX'}</h3>
-            </div>
-
-            <div className="course-card-body">
-                <div className="info-row">
-                    <Calendar size={16} />
-                    <span>Inicio: {fields['Fecha_inicio'] || 'TBD'}</span>
-                </div>
-                <div className="info-row">
-                    <Clock size={16} />
-                    <span>{fields['Horario'] || 'Horario Flexible'}</span>
-                </div>
-
-                <div className="progress-section">
-                    <div className="progress-header">
-                        <span>Asistencia</span>
-                        <span>{Math.round(assistance * 100)}%</span>
-                    </div>
-                    <div className="progress-bar-container">
-                        <div
-                            className="progress-bar-fill"
-                            style={{ width: `${assistance * 100}%` }}
-                        ></div>
-                    </div>
-                    {assistance >= 0.8 && <span className="eligible-label">✓ Elegible para certificado</span>}
+        <div>
+            <div className="db-calendar-header">
+                <span className="db-cal-month" style={{ textTransform: 'capitalize' }}>{monthName}</span>
+                <div className="db-cal-nav">
+                    <button className="db-cal-nav-btn" onClick={() => setOffset(o => o - 1)}>
+                        <i className="fas fa-chevron-left" />
+                    </button>
+                    <button className="db-cal-nav-btn" onClick={() => setOffset(o => o + 1)}>
+                        <i className="fas fa-chevron-right" />
+                    </button>
                 </div>
             </div>
-
-            <div className="course-card-actions">
-                {fields['Zoom_Link'] && (
-                    <a href={fields['Zoom_Link']} target="_blank" rel="noreferrer" className="action-link zoom">
-                        <Video size={18} />
-                        <span>Clase Virtual</span>
-                    </a>
-                )}
-                {fields['WhatsApp_Group'] && (
-                    <a href={fields['WhatsApp_Group']} target="_blank" rel="noreferrer" className="action-link wa">
-                        <MessageCircle size={18} />
-                        <span>WhatsApp</span>
-                    </a>
-                )}
+            <div className="db-cal-grid">
+                {dayNames.map(d => (
+                    <div key={d} className="db-cal-day-name">{d}</div>
+                ))}
+                {cells.map((d, i) => (
+                    <div
+                        key={i}
+                        className={`db-cal-day ${!d ? 'other-month' : ''} ${d && isToday(d) ? 'today' : ''} ${d && hasSess(d) ? 'has-session' : ''}`}
+                    >
+                        {d || ''}
+                        {d && hasSess(d) && <span className="db-cal-dot" />}
+                    </div>
+                ))}
             </div>
         </div>
     );
 };
 
-const Dashboard = () => {
+/* ── Datos de demo ── */
+const DEMO_PROGRAMS = [
+    {
+        id: 1,
+        categoria: 'Diplomado',
+        titulo: 'Gestión Estratégica y Liderazgo Organizacional',
+        facilitador: 'Dra. Ana Castillo',
+        modalidad: 'Presencial',
+        moduloActual: 'Módulo 3 — Liderazgo Situacional',
+        moduloNum: 3,
+        totalModulos: 6,
+        asistenciaPct: 88,
+        formStatus: 'completed',
+        hasAlert: false,
+        status: 'active',
+        sesiones: '3 de 5 sesiones',
+        proximaSesion: 'Lun 14 Abr · 6:00 PM',
+    },
+    {
+        id: 2,
+        categoria: 'Taller',
+        titulo: 'Comunicación Efectiva en Equipos de Alto Rendimiento',
+        facilitador: 'Lic. Roberto Méndez',
+        modalidad: 'Virtual',
+        moduloActual: 'Módulo 2 — Feedback Constructivo',
+        moduloNum: 2,
+        totalModulos: 4,
+        asistenciaPct: 75,
+        formStatus: 'pending',
+        hasAlert: true,
+        status: 'warning',
+        sesiones: '2 de 3 sesiones',
+        proximaSesion: 'Mié 16 Abr · 7:00 PM',
+    },
+];
+
+const DEMO_NOTIFS = [
+    {
+        id: 1,
+        type: 'info',
+        icon: 'fas fa-calendar-alt',
+        title: 'Próxima sesión mañana',
+        desc: 'Liderazgo Situacional · Aula 103 · 6:00 PM',
+        time: 'Hoy',
+        action: null,
+    },
+    {
+        id: 2,
+        type: 'warning',
+        icon: 'fas fa-clipboard-list',
+        title: 'Formulario pendiente',
+        desc: 'Módulo 2 de Comunicación Efectiva requiere tu evaluación.',
+        time: 'Hace 2d',
+        action: { label: 'Completar ahora', style: 'primary' },
+    },
+    {
+        id: 3,
+        type: 'success',
+        icon: 'fas fa-award',
+        title: 'Certificado disponible',
+        desc: 'Tu certificado de "Introducción al Liderazgo" está listo.',
+        time: 'Hace 5d',
+        action: { label: 'Descargar', style: 'success' },
+    },
+];
+
+const SESSION_DAYS = [14, 16, 22, 28];
+
+const UPCOMING = [
+    { day: '14', month: 'ABR', title: 'Liderazgo Situacional', time: '6:00 PM · Aula 103' },
+    { day: '16', month: 'ABR', title: 'Feedback Constructivo', time: '7:00 PM · Zoom' },
+    { day: '22', month: 'ABR', title: 'Gestión del Cambio', time: '6:00 PM · Aula 103' },
+];
+
+/* ── Componente principal ── */
+export default function Dashboard() {
     const { user } = useAuth();
     const navigate = useNavigate();
-    const { getEnrollments } = useAirtableData();
-    const [enrollments, setEnrollments] = useState([]);
-    const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchDashboardData = async () => {
-            if (user?.recordId) {
-                try {
-                    const data = await getEnrollments(user.recordId);
-                    setEnrollments(data);
-                } catch (error) {
-                    console.error('Error fetching enrollments:', error);
-                } finally {
-                    setLoading(false);
-                }
-            }
-        };
-        fetchDashboardData();
-    }, [user]);
+    const initials = getInitials(user?.Nombre, user?.Apellido);
+    const matricula = user?.Matricula || user?.ID_participante || 'CPX-2026-001';
 
-    if (loading) return <div className="loading-state">PROCESANDO DATOS DEL SERVIDOR...</div>;
+    const totalActivos      = DEMO_PROGRAMS.length;
+    const certDisponibles   = 1;
+    const formsPendientes   = DEMO_PROGRAMS.filter(p => p.formStatus === 'pending').length;
+
+    const handleNav = (key) => {
+        if (key !== 'dashboard') navigate(`/${key}`);
+    };
 
     return (
-        <div className="dashboard-modern">
-            <div className="welcome-banner">
-                <div className="welcome-text">
-                    <h2>Hola, {user?.Nombre || 'Participante'}</h2>
-                    <p>Bienvenido de vuelta a tu portal de aprendizaje ejecutivo.</p>
+        <>
+            {/* ── WELCOME BANNER ── */}
+            <div className="db-welcome">
+                <div className="db-welcome-shape-1" />
+                <div className="db-welcome-shape-2" />
+
+                <div className="db-welcome-left">
+                    <div className="db-welcome-avatar">{initials}</div>
+                    <div className="db-welcome-text">
+                        <span className="greeting">Bienvenido de vuelta</span>
+                        <h2>Hola, {user?.Nombre || 'Participante'} 👋</h2>
+                        <span className="matricula">
+                            <i className="fas fa-id-card" />
+                            Matrícula: {matricula}
+                        </span>
+                    </div>
                 </div>
-                <div className="welcome-stats">
-                    <div className="stat-pill">
-                        <span className="stat-value">{enrollments.length}</span>
-                        <span className="stat-label">Cursos<br />Activos</span>
+
+                <div className="db-welcome-right">
+                    <button className="db-quick-action" onClick={() => handleNav('mis-cursos')}>
+                        <i className="fas fa-graduation-cap" />
+                        <span>Mis<br />Cursos</span>
+                    </button>
+                    <button className="db-quick-action" onClick={() => handleNav('certificados')}>
+                        <i className="fas fa-award" />
+                        <span>Certificados</span>
+                    </button>
+                    <button className="db-quick-action" onClick={() => handleNav('perfil')}>
+                        <i className="fas fa-user-circle" />
+                        <span>Mi<br />Perfil</span>
+                    </button>
+                </div>
+            </div>
+
+            {/* ── STATS ROW ── */}
+            <div className="db-stats-row">
+                <div className="db-stat-mini">
+                    <div className="db-stat-mini-icon blue">
+                        <i className="fas fa-book-open" />
+                    </div>
+                    <div>
+                        <span className="db-stat-mini-val">{totalActivos}</span>
+                        <span className="db-stat-mini-label">Cursos Activos</span>
+                    </div>
+                </div>
+                <div className="db-stat-mini">
+                    <div className="db-stat-mini-icon green">
+                        <i className="fas fa-award" />
+                    </div>
+                    <div>
+                        <span className="db-stat-mini-val">{certDisponibles}</span>
+                        <span className="db-stat-mini-label">Certificado disponible</span>
+                    </div>
+                </div>
+                <div className="db-stat-mini">
+                    <div className="db-stat-mini-icon orange">
+                        <i className="fas fa-clipboard-list" />
+                    </div>
+                    <div>
+                        <span className="db-stat-mini-val">{formsPendientes}</span>
+                        <span className="db-stat-mini-label">Formulario pendiente</span>
                     </div>
                 </div>
             </div>
 
-            <div className="dashboard-quick-actions" style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
-                <button className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} onClick={() => navigate('/programas')}>
-                    <BookOpen size={16} /> Explorar Catálogo
-                </button>
-                <button className="btn btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#f8fafc', color: '#1e293b' }} onClick={() => navigate('/certificados')}>
-                    <Award size={16} /> Mis Certificados
-                </button>
-                <button className="btn btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#f8fafc', color: '#1e293b' }} onClick={() => navigate('/perfil')}>
-                    <User size={16} /> Configurar Perfil
-                </button>
-            </div>
+            {/* ── GRID PRINCIPAL ── */}
+            <div className="db-grid">
 
-            <div className="dashboard-grid">
-                <div className="main-feed">
-                    <div className="section-header-modern">
-                        <h3>Mis Programas en Curso</h3>
+                {/* Columna izquierda — Programas */}
+                <div>
+                    <div className="db-section-title">
+                        <i className="fas fa-layer-group" style={{ color: 'var(--capex-blue)', fontSize: '0.75rem' }} />
+                        Mis Programas Activos
                     </div>
 
-                    {enrollments.length > 0 ? (
-                        <div className="course-grid-modern">
-                            {enrollments.map(enr => (
-                                <CourseCard key={enr.id} enrollment={enr} />
-                            ))}
+                    {DEMO_PROGRAMS.length === 0 ? (
+                        <div className="db-empty-state">
+                            <i className="fas fa-book-open" />
+                            <h4>Sin programas registrados</h4>
+                            <p>No tienes inscripciones activas en este momento.<br />Contacta a soporte académico si crees que esto es un error.</p>
                         </div>
                     ) : (
-                        <div className="empty-state-modern">
-                            <BookOpen size={48} className="empty-icon" />
-                            <h4>Sin programas registrados</h4>
-                            <p>No se visualizan inscripciones activas en este perfil. Si consideras que esto es un error, contacta a soporte académico.</p>
+                        <div className="db-programs-list">
+                            {DEMO_PROGRAMS.map(prog => {
+                                const pctClass = getPctClass(prog.asistenciaPct);
+                                return (
+                                    <div
+                                        key={prog.id}
+                                        className={`db-program-card ${prog.hasAlert ? 'has-alert' : ''}`}
+                                    >
+                                        {/* Alerta formulario pendiente */}
+                                        {prog.hasAlert && (
+                                            <div className="db-program-alert">
+                                                <i className="fas fa-exclamation-triangle" />
+                                                <span>Tienes un formulario pendiente que bloquea tu acceso al siguiente módulo.</span>
+                                                <button
+                                                    className="db-program-alert-btn"
+                                                    onClick={() => handleNav('encuestas')}
+                                                >
+                                                    Completar →
+                                                </button>
+                                            </div>
+                                        )}
+
+                                        <div className="db-program-header">
+                                            <div className="db-program-header-left">
+                                                <div className="db-program-category">
+                                                    <i className="fas fa-tag" />
+                                                    {prog.categoria} · {prog.modalidad}
+                                                </div>
+                                                <div className="db-program-title">{prog.titulo}</div>
+                                                <div className="db-program-meta">
+                                                    <span>
+                                                        <i className="fas fa-chalkboard-teacher" />
+                                                        {prog.facilitador}
+                                                    </span>
+                                                    <span>
+                                                        <i className="fas fa-cubes" />
+                                                        {prog.totalModulos} módulos
+                                                    </span>
+                                                    <span>
+                                                        <i className="fas fa-calendar-alt" />
+                                                        {prog.proximaSesion}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div className={`db-status-pill ${prog.status === 'active' ? 'db-status-active' : 'db-status-warning'}`}>
+                                                {prog.status === 'active' ? 'Activo' : 'Atención'}
+                                            </div>
+                                        </div>
+
+                                        {/* Módulo actual */}
+                                        <div className="db-current-module">
+                                            <div className="db-current-module-label">Módulo actual</div>
+                                            <div className="db-current-module-name">
+                                                <span className="db-module-num">M{prog.moduloNum}</span>
+                                                {prog.moduloActual.replace(/^Módulo \d+ — /, '')}
+                                            </div>
+                                        </div>
+
+                                        {/* Asistencia */}
+                                        <div className="db-attendance">
+                                            <div className="db-attendance-header">
+                                                <span className="db-attendance-label">
+                                                    <i className="fas fa-user-check" />
+                                                    Asistencia acumulada · {prog.sesiones}
+                                                </span>
+                                                <span className={`db-attendance-pct ${pctClass}`}>
+                                                    {prog.asistenciaPct}%
+                                                </span>
+                                            </div>
+                                            <div className="db-progress-track">
+                                                <div
+                                                    className={`db-progress-fill ${pctClass}`}
+                                                    style={{ width: `${prog.asistenciaPct}%` }}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        {/* Footer */}
+                                        <div className="db-program-footer">
+                                            <div className={`db-form-status ${prog.formStatus === 'completed' ? 'done' : 'pending'}`}>
+                                                <i className={prog.formStatus === 'completed' ? 'fas fa-check-circle' : 'fas fa-clock'} />
+                                                {prog.formStatus === 'completed'
+                                                    ? 'Formulario del módulo completado'
+                                                    : 'Formulario del módulo pendiente'}
+                                            </div>
+                                            <div style={{ display: 'flex', gap: 8 }}>
+                                                {prog.formStatus === 'pending' && (
+                                                    <button
+                                                        className="db-program-action primary"
+                                                        onClick={() => handleNav('encuestas')}
+                                                    >
+                                                        <i className="fas fa-clipboard-check" />
+                                                        Evaluar módulo
+                                                    </button>
+                                                )}
+                                                <button
+                                                    className="db-program-action secondary"
+                                                    onClick={() => handleNav('mis-cursos')}
+                                                >
+                                                    <i className="fas fa-eye" />
+                                                    Ver detalle
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
                     )}
                 </div>
 
-                <div className="side-feed">
-                    <div className="feed-card">
-                        <h3>Centro de Notificaciones</h3>
-                        <ul className="modern-list">
-                            <li>
-                                <div className="list-icon info"></div>
-                                <div className="list-content">Inicio de Diplomado: Gestión Humana 4.0 - Lunes 15 de Abril</div>
-                            </li>
-                            <li>
-                                <div className="list-icon pending"></div>
-                                <div className="list-content">Encuesta de satisfacción pendiente del curso anterior.</div>
-                            </li>
-                            <li>
-                                <div className="list-icon success"></div>
-                                <div className="list-content">Tu certificado de "Liderazgo Efectivo" ya está disponible para descarga.</div>
-                            </li>
-                        </ul>
+                {/* Columna derecha */}
+                <div className="db-right-col">
+
+                    {/* Notificaciones */}
+                    <div className="db-panel-card">
+                        <div className="db-panel-card-title">
+                            Centro de Notificaciones
+                            <span className="count">{DEMO_NOTIFS.length}</span>
+                        </div>
+                        <div className="db-notif-list">
+                            {DEMO_NOTIFS.map((notif, idx) => (
+                                <React.Fragment key={notif.id}>
+                                    <div className="db-notif-item">
+                                        <div className={`db-notif-icon ${notif.type}`}>
+                                            <i className={notif.icon} />
+                                        </div>
+                                        <div className="db-notif-body">
+                                            <strong>{notif.title}</strong>
+                                            <span>{notif.desc}</span>
+                                            {notif.action && (
+                                                <button
+                                                    className={`db-notif-action ${notif.action.style}`}
+                                                    onClick={() => {
+                                                        if (notif.action.style === 'primary') handleNav('encuestas');
+                                                        if (notif.action.style === 'success') handleNav('certificados');
+                                                    }}
+                                                >
+                                                    {notif.action.label}
+                                                    <i className="fas fa-arrow-right" />
+                                                </button>
+                                            )}
+                                        </div>
+                                        <span className="db-notif-time">{notif.time}</span>
+                                    </div>
+                                    {idx < DEMO_NOTIFS.length - 1 && (
+                                        <div className="db-notif-divider" />
+                                    )}
+                                </React.Fragment>
+                            ))}
+                        </div>
                     </div>
 
-                    <div className="feed-card">
-                        <h3>Soporte Académico</h3>
-                        <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
-                            ¿Necesitas ayuda con tu plataforma o tienes dudas sobre tus cursos?
-                        </p>
-                        <a href="mailto:info@capex.edu.do" className="btn btn-primary" style={{ width: '100%' }}>
-                            Contactar Soporte
-                        </a>
+                    {/* Mini Calendario */}
+                    <div className="db-panel-card">
+                        <div className="db-panel-card-title">
+                            Calendario de Sesiones
+                        </div>
+                        <MiniCalendar sessionDays={SESSION_DAYS} />
+                        <div className="db-upcoming-sessions">
+                            {UPCOMING.map((s, i) => (
+                                <div key={i} className="db-upcoming-item">
+                                    <div className="db-upcoming-date">
+                                        <span className="day">{s.day}</span>
+                                        <span className="month">{s.month}</span>
+                                    </div>
+                                    <div className="db-upcoming-info">
+                                        <strong>{s.title}</strong>
+                                        <span>
+                                            <i className="fas fa-clock" style={{ color: 'var(--capex-blue)', fontSize: '0.65rem' }} />
+                                            {s.time}
+                                        </span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
+
                 </div>
             </div>
-        </div>
+        </>
     );
-};
-
-export default Dashboard;
+}
